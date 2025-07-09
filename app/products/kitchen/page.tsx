@@ -35,11 +35,14 @@ const kitchenGallery = [
 export default function KitchenGalleryPage() {
   const [filter, setFilter] = useState("All");
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [visibleCount, setVisibleCount] = useState(6);
 
-  const filteredGallery =
+  const allFiltered =
     filter === "All"
       ? kitchenGallery
       : kitchenGallery.filter((img) => img.type === filter);
+
+  const visibleImages = allFiltered.slice(0, visibleCount);
 
   return (
     <div className="min-h-screen bg-[#0a1526] text-white py-24 px-6">
@@ -52,7 +55,10 @@ export default function KitchenGalleryPage() {
         {kitchenTypes.map((type) => (
           <button
             key={type}
-            onClick={() => setFilter(type)}
+            onClick={() => {
+              setFilter(type);
+              setVisibleCount(6); // Reset visible count on filter change
+            }}
             className={clsx(
               "px-6 py-2 rounded-full text-sm border transition-all duration-300",
               filter === type
@@ -67,7 +73,7 @@ export default function KitchenGalleryPage() {
 
       {/* Image Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
-        {filteredGallery.map((img, index) => (
+        {visibleImages.map((img, index) => (
           <div
             key={index}
             onClick={() => setLightboxIndex(index)}
@@ -87,13 +93,25 @@ export default function KitchenGalleryPage() {
         ))}
       </div>
 
+      {/* Load More Button */}
+      {visibleCount < allFiltered.length && (
+        <div className="text-center mt-8">
+          <button
+            onClick={() => setVisibleCount((prev) => prev + 3)}
+            className="px-6 py-2 border border-white rounded-full text-white hover:bg-white hover:text-[#0a1526] transition-all duration-300 text-sm"
+          >
+            Load More
+          </button>
+        </div>
+      )}
+
       {/* Lightbox */}
       {lightboxIndex >= 0 && (
         <Lightbox
           open
           index={lightboxIndex}
           close={() => setLightboxIndex(-1)}
-          slides={filteredGallery.map((img) => ({ src: img.src }))}
+          slides={visibleImages.map((img) => ({ src: img.src }))}
         />
       )}
     </div>

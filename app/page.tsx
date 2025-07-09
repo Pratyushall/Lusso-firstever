@@ -1,14 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
-import Button from "../components/button";
 import { Playfair_Display, Gloock } from "next/font/google";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import { Home } from "lucide-react";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -38,48 +36,21 @@ const galleryItems = [
 
 export default function HomePage() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className={`min-h-screen ${gloock.variable} ${playfair.variable}`}>
-      {/* Header */}
-      <header className="w-full bg-[#0a1526] shadow-sm fixed top-0 left-0 z-50 transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
-          {/* LUSSO Button */}
-          <Link
-            href="/"
-            className="px-4 py-1.5 border border-white/40 rounded-full backdrop-blur-sm bg-white/5 text-white text-xl md:text-2xl font-[Gloock] tracking-widest hover:bg-white/10 hover:shadow-lg transition-all duration-300"
-          >
-            LUSSO
-          </Link>
-
-          {/* Navigation Buttons */}
-          <nav className="flex space-x-4 text-sm font-medium items-center">
-            <Link
-              href="/about"
-              className="px-4 py-1.5 border border-white/30 text-white rounded-full hover:bg-white/10 hover:shadow-md backdrop-blur-md transition duration-300"
-            >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="px-4 py-1.5 border border-white/30 text-white rounded-full hover:bg-white/10 hover:shadow-md backdrop-blur-md transition duration-300"
-            >
-              Contact
-            </Link>
-            <a
-              href="https://wa.me/919000000000"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 border border-green-500 text-green-400 rounded-full hover:bg-green-600 hover:text-white hover:shadow-lg transition duration-300"
-            >
-              <FaWhatsapp size={20} />
-            </a>
-          </nav>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center pt-20">
+        {/* Background Video */}
         <video
           autoPlay
           loop
@@ -89,12 +60,18 @@ export default function HomePage() {
         >
           <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
+
+        {/* Overlay */}
         <div className="absolute inset-0 bg-black/40 z-10" />
 
-        <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto"></div>
+        {/* Static Text */}
+        <div className="relative z-20 text-center text-white px-4 max-w-3xl mx-auto">
+          <h1 className="text-2xl md:text-4xl font-light font-serif tracking-wide">
+            Not just space, your story.
+          </h1>
+        </div>
       </section>
 
-      {/* Lookbook Slider */}
       {/* Lookbook Slider */}
       <section className="py-24 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
@@ -161,14 +138,14 @@ export default function HomePage() {
 
             <div className="mt-6 flex gap-4">
               <Link href="/products/kitchen">
-                <Button className="bg-white text-[#060f1c] hover:bg-gray-200">
+                <button className="bg-white text-[#060f1c] hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-semibold transition duration-300">
                   Kitchen
-                </Button>
+                </button>
               </Link>
               <Link href="/products/wardrobes">
-                <Button className="bg-white text-[#050c15] hover:bg-gray-200">
+                <button className="bg-white text-[#050c15] hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-semibold transition duration-300">
                   Wardrobes
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
@@ -211,7 +188,7 @@ export default function HomePage() {
         {/* Blurred Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/3.jpg" // Replace with your actual image path
+            src="/images/3.jpg"
             alt="Your space background"
             layout="fill"
             objectFit="cover"
