@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Playfair_Display, Gloock } from "next/font/google";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { Home } from "lucide-react";
+import { motion, useInView } from "framer-motion";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -34,9 +34,44 @@ const galleryItems = [
   "/images/kit1.jpg",
 ];
 
+const journeySteps = [
+  {
+    title: "Let's connect",
+    image: "/images/letsconnect.jpg",
+    details:
+      "Fill out a quick form, or give us a call! Tell us about your dream kitchen or wardrobe",
+  },
+  {
+    title: "Design Consultation",
+    image: "/images/design.jpg",
+    details: "We build the blueprint of your dream space.",
+  },
+  {
+    title: "Final Touches and Quote",
+    image: "/images/touches.jpg",
+    details: "Pick from handpicked luxury finishes and textures.",
+  },
+  {
+    title: "Installation Begins",
+    image: "/images/installation.jpg",
+    details: "Our team brings your vision to life.",
+  },
+  {
+    title: "Experience it Live",
+    image: "/images/experience.jpg",
+    details: "Every corner is checked for finesse and perfection.",
+  },
+  {
+    title: "Aftercare and Support",
+    image: "/images/support.jpg",
+    details: "Welcome to your new, luxurious home.",
+  },
+];
+
 export default function HomePage() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
   const [scrolled, setScrolled] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,7 +85,6 @@ export default function HomePage() {
     <div className={`min-h-screen ${gloock.variable} ${playfair.variable}`}>
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center pt-20">
-        {/* Background Video */}
         <video
           autoPlay
           loop
@@ -60,15 +94,9 @@ export default function HomePage() {
         >
           <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
-
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/40 z-10" />
-
-        {/* Static Text */}
         <div className="relative z-20 text-center text-white px-4 max-w-3xl mx-auto">
-          <h1 className="text-2xl md:text-4xl font-light font-serif tracking-wide">
-            Not just space, your story.
-          </h1>
+          <h1 className="text-2xl md:text-4xl font-light font-serif tracking-wide"></h1>
         </div>
       </section>
 
@@ -117,7 +145,6 @@ export default function HomePage() {
       {/* The Lusso Way Section */}
       <section className="py-24 px-4 bg-[#0a1526] text-white">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Text */}
           <div>
             <h2 className="text-4xl font-serif font-light mb-6">
               The Lusso Way
@@ -135,22 +162,30 @@ export default function HomePage() {
               With Lusso, your dream space is your blank canvas. We just make
               sure it turns out exquisite.
             </p>
-
             <div className="mt-6 flex gap-4">
               <Link href="/products/kitchen">
-                <button className="bg-white text-[#060f1c] hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-semibold transition duration-300">
+                <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full transition-transform duration-300 hover:scale-105">
                   Kitchen
                 </button>
               </Link>
               <Link href="/products/wardrobes">
-                <button className="bg-white text-[#050c15] hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-semibold transition duration-300">
+                <button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full transition-transform duration-300 hover:scale-105">
                   Wardrobes
+                </button>
+              </Link>
+              <Link href="/products/partitions">
+                <button className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-full transition-transform duration-300 hover:scale-105">
+                  Partitions
+                </button>
+              </Link>
+              <Link href="/products/shutters">
+                <button className="bg-yellow-800 hover:bg-yellow-900 text-white font-semibold px-6 py-3 rounded-full transition-transform duration-300 hover:scale-105">
+                  Shutters
                 </button>
               </Link>
             </div>
           </div>
 
-          {/* Images */}
           <div className="grid grid-cols-2 gap-4">
             <div className="row-span-2">
               <Image
@@ -185,7 +220,6 @@ export default function HomePage() {
 
       {/* Your Space, Your Story Section */}
       <section className="relative py-24 px-6 bg-[#0a1526] text-white text-center overflow-hidden">
-        {/* Blurred Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/3.jpg"
@@ -195,8 +229,6 @@ export default function HomePage() {
             className="blur-sm brightness-50"
           />
         </div>
-
-        {/* Content */}
         <div className="relative z-10 max-w-5xl mx-auto space-y-8">
           <h2 className="text-3xl md:text-4xl font-serif font-light">
             Your Space, Your Story
@@ -219,6 +251,146 @@ export default function HomePage() {
             </p>
           </div>
         </div>
+      </section>
+
+      {/* Products Section */}
+      <section className="py-24 px-6 bg-[#0a1526] text-white text-center">
+        <h2 className="text-3xl md:text-4xl font-serif font-light mb-12">
+          Our Products
+        </h2>
+        <p className="max-w-2xl mx-auto mb-12 text-lg text-white/80">
+          Four elements, one essence — Kitchens, Wardrobes, Partitions, and
+          Shutters. Designed with soul, built to last.
+        </p>
+        <Link href="/products">
+          <button className="bg-white text-[#0a1526] hover:bg-gray-200 px-6 py-3 rounded-full text-sm font-semibold transition duration-300">
+            View All Products
+          </button>
+        </Link>
+      </section>
+
+      {/* Your Journey with LUSSO Section */}
+      <section className="bg-[#0a1526] py-24 px-6 text-white font-sans relative">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-center mb-16">
+            Your Journey with LUSSO
+          </h2>
+
+          <div className="space-y-24">
+            {journeySteps.map((step, index) => {
+              const ref = useRef(null);
+              const isInView = useInView(ref, { once: true, margin: "-100px" });
+              const direction = index % 2 === 0 ? -100 : 100;
+
+              return (
+                <motion.div
+                  key={index}
+                  ref={ref}
+                  initial={{ opacity: 0, x: direction }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className={`flex flex-col md:flex-row items-center ${
+                    index % 2 !== 0 ? "md:flex-row-reverse" : ""
+                  }`}
+                >
+                  {/* Image */}
+                  <div className="relative w-full md:w-3/4 h-96 rounded-xxl overflow-hidden shadow-xl group">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+
+                  {/* Title */}
+                  <motion.div
+                    className="w-full md:w-1/2 px-6 mt-8 md:mt-0"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 1, delay: 0.3 }}
+                  >
+                    <h3
+                      className="text-3xl font-serif font-light leading-tight cursor-pointer hover:underline transition-all duration-300"
+                      onClick={() => setActiveIndex(index)}
+                    >
+                      {step.title}
+                    </h3>
+                  </motion.div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Expanded fancy box with form */}
+        {activeIndex !== null && (
+          <div
+            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center transition-all duration-500"
+            onClick={() => setActiveIndex(null)}
+          >
+            <div
+              className="relative w-full max-w-3xl bg-[#131e33]/80 backdrop-blur-xl rounded-2xl p-8 text-white shadow-2xl mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="absolute top-4 right-4 bg-white/20 w-8 h-8 rounded-full text-white text-lg"
+                onClick={() => setActiveIndex(null)}
+              >
+                ×
+              </button>
+              <div className="relative w-full h-64 rounded-xl overflow-hidden mb-6">
+                <Image
+                  src={journeySteps[activeIndex].image}
+                  alt={journeySteps[activeIndex].title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <h3 className="text-2xl font-serif mb-4">
+                {journeySteps[activeIndex].title}
+              </h3>
+              <p className="text-sm leading-relaxed mb-6">
+                {journeySteps[activeIndex].details}
+              </p>
+
+              {journeySteps[activeIndex].title === "Let's connect" && (
+                <form className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    className="w-full bg-white/10 border border-white/30 placeholder-white/60 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/40"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    className="w-full bg-white/10 border border-white/30 placeholder-white/60 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/40"
+                  />
+                  <textarea
+                    placeholder="Tell us about your dream kitchen or wardrobe..."
+                    rows={4}
+                    className="w-full bg-white/10 border border-white/30 placeholder-white/60 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/40"
+                  />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm text-white/70">
+                      Upload Reference Image
+                    </label>
+                    <input
+                      type="file"
+                      className="text-white file:bg-white/20 file:border-0 file:rounded-full file:px-4 file:py-2 file:text-white file:cursor-pointer"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="mt-4 bg-white text-[#0a1526] hover:scale-105 transition-transform duration-300 px-6 py-3 rounded-full text-sm font-semibold"
+                  >
+                    Let’s Build Together
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

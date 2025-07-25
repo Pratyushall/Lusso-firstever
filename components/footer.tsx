@@ -72,7 +72,11 @@ export default function Footer() {
 
         {/* Middle: Products */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Products</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            <Link href="/products" className="hover:underline">
+              Products
+            </Link>
+          </h3>
           <ul className="space-y-2 text-sm">
             <li>
               <Link href="/products/kitchen" className="hover:underline">
@@ -82,6 +86,16 @@ export default function Footer() {
             <li>
               <Link href="/products/wardrobes" className="hover:underline">
                 Wardrobes
+              </Link>
+            </li>
+            <li>
+              <Link href="/products/partitions" className="hover:underline">
+                Partitions
+              </Link>
+            </li>
+            <li>
+              <Link href="/products/shutters" className="hover:underline">
+                Shutters
               </Link>
             </li>
           </ul>

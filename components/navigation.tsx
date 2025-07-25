@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import Button from "./button"; // ✅ assuming it's a custom styled button
+import { Menu, X, ChevronDown } from "lucide-react";
+import Button from "./button";
 import { Playfair_Display, Gloock } from "next/font/google";
 
 const playfair = Playfair_Display({
@@ -22,16 +22,10 @@ const gloock = Gloock({
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const navLinks = [
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-  ];
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -50,21 +44,64 @@ export default function Navigation() {
           href="/"
           className="text-2xl md:text-3xl font-[Gloock] tracking-widest"
         >
-          LUSSO
+          LUSSO <span className="text-sm font-light">| Luxury Simplified</span>
         </Link>
 
         {/* Desktop Navigation */}
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6 text-sm font-light whitespace-nowrap">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="hover:text-neutral-300 transition-colors duration-300"
+          <Link href="/" className="hover:text-neutral-300 transition">
+            Home
+          </Link>
+          <Link href="/portfolio" className="hover:text-neutral-300 transition">
+            Portfolio
+          </Link>
+
+          <div className="relative">
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="flex items-center gap-1 hover:text-neutral-300 transition"
             >
-              {link.label}
-            </Link>
-          ))}
+              Products <ChevronDown className="w-4 h-4" />
+            </button>
+            {showDropdown && (
+              <div className="absolute mt-2 w-48 bg-[#0a1526] text-white rounded-lg shadow-lg overflow-hidden z-50 border border-white/10">
+                <Link
+                  href="/products"
+                  className="block px-4 py-2 hover:bg-white/10 transition"
+                >
+                  All Products
+                </Link>
+                <Link
+                  href="/products/kitchen"
+                  className="block px-4 py-2 hover:bg-white/10 transition"
+                >
+                  Kitchens
+                </Link>
+                <Link
+                  href="/products/wardrobes"
+                  className="block px-4 py-2 hover:bg-white/10 transition"
+                >
+                  Wardrobes
+                </Link>
+                <Link
+                  href="/products/partitions"
+                  className="block px-4 py-2 hover:bg-white/10 transition"
+                >
+                  Partitions
+                </Link>
+                <Link
+                  href="/products/shutters"
+                  className="block px-4 py-2 hover:bg-white/10 transition"
+                >
+                  Shutters
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <Link href="/contact" className="hover:text-neutral-300 transition">
+            Contact Us
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -84,19 +121,72 @@ export default function Navigation() {
         </div>
       </div>
 
-      {/* Mobile Dropdown */}
+      {/* Mobile Dropdown Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-[#0a1526]/95 px-6 py-4 mt-2 rounded-md backdrop-blur-sm text-white">
-          {navLinks.map((link) => (
+          <Link
+            href="/"
+            onClick={() => setIsMenuOpen(false)}
+            className="block py-2 text-lg"
+          >
+            Home
+          </Link>
+          <Link
+            href="/portfolio"
+            onClick={() => setIsMenuOpen(false)}
+            className="block py-2 text-lg"
+          >
+            Portfolio
+          </Link>
+
+          <div className="mt-2">
+            <p className="uppercase text-xs mb-1 tracking-wider text-white/60">
+              Products
+            </p>
             <Link
-              key={link.href}
-              href={link.href}
+              href="/products"
+              className="block py-2 text-white"
               onClick={() => setIsMenuOpen(false)}
-              className="block text-white hover:text-neutral-300 text-lg font-light py-1"
             >
-              {link.label}
+              All Products
             </Link>
-          ))}
+            <Link
+              href="/products/kitchen"
+              className="block py-2 text-white"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Kitchens
+            </Link>
+            <Link
+              href="/products/wardrobes"
+              className="block py-2 text-white"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Wardrobes
+            </Link>
+            <Link
+              href="/products/partitions"
+              className="block py-2 text-white"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Partitions
+            </Link>
+            <Link
+              href="/products/shutters"
+              className="block py-2 text-white"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Shutters
+            </Link>
+          </div>
+
+          <Link
+            href="/contact"
+            onClick={() => setIsMenuOpen(false)}
+            className="block py-2 text-lg"
+          >
+            Contact Us
+          </Link>
         </div>
       )}
     </nav>
